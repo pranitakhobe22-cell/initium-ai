@@ -31,7 +31,11 @@ app.use((req, _res, next) => {
 app.use('/api', apiLimiter);
 
 // ── Routes ────────────────────────────────────────────────────────────────────
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Initium.AI Backend Online", timestamp: new Date().toISOString() });
+});
 app.get("/api/profile", (req, res) => {
+
   res.json({ message: "Profile API working" });
 });
 app.use('/api/auth', authRoutes);

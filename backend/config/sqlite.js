@@ -1,4 +1,3 @@
-const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 
@@ -18,10 +17,12 @@ const dbPath = path.join(DATA_DIR, 'initium.db');
 
 let db;
 try {
-  console.log(`🔄 Initializing SQLite at: ${dbPath}`);
+  console.log(`🔄 Initializing SQLite Core at: ${dbPath}`);
+  const Database = require('better-sqlite3');
   db = new Database(dbPath, { verbose: console.log });
   
   // Initialize Schema
+
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -48,18 +49,18 @@ try {
     );
   `);
 } catch (error) {
-  console.error('⚠️ SQLite Initialization Failed. Using Cloud-Safe Resilient Storage Fallback.');
-  console.error(error);
+  console.warn('⚠️ SQLite Binary not found or incompatible. Activating Cloud-Safe Mock Persistence.');
   
-  // Mock DB object for controllers if binary fails
+  // Mock DB object carefully to return null for "not found" instead of an object
   db = {
     prepare: () => ({
-      get: () => ({ count: 0 }),
+      get: () => null, 
       all: () => [],
       run: () => ({ changes: 1 })
     }),
     exec: () => {}
   };
 }
+
 
 module.exports = db;

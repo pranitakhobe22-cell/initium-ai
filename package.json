@@ -5,8 +5,10 @@
   "scripts": {
     "backend": "cd backend && npm start",
     "frontend": "cd frontend-react && npm run dev",
+    "build": "cd frontend-react && npm install && npm run build",
     "start": "concurrently \"npm run backend\" \"npm run frontend\"",
     "setup": "powershell -ExecutionPolicy Bypass -File setup-initium.ps1"
+
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
