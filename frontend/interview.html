@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interview — Initium.AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .q-counter { font-size:.85rem; color:var(--muted); margin-bottom:8px; }
+    .question-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent); border-radius: var(--radius);
+      padding: 20px 24px; margin-bottom: 28px;
+      font-size: 1.05rem; font-weight: 500; animation: fadeIn .3s;
+    }
+    /* Feedback panel */
+    .feedback-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      display: none; animation: fadeIn .3s; margin-bottom: 20px;
+    }
+    .feedback-box.show { display: block; }
+    .feedback-section { margin-bottom: 12px; }
+    .feedback-section h4 { font-size: .85rem; color: var(--muted); margin-bottom: 6px; }
+    .feedback-section ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .feedback-section li { font-size: .9rem; padding-left: 16px; position: relative; }
+    .feedback-section li::before { content: '•'; position: absolute; left: 0; }
+    .strength li::before  { color: var(--accent2); }
+    .improve  li::before  { color: var(--danger); }
+
+    /* Voice controls */
+    .voice-bar {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 10px 14px;
+      margin-bottom: 12px;
+    }
+    .mic-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; transition: all .2s; flex-shrink: 0;
+      background: var(--accent); color: #fff;
+    }
+    .mic-btn.listening {
+      background: var(--danger);
+      animation: pulse 1s infinite;
+    }
+    .mic-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,109,.4); }
+      50%       { box-shadow: 0 0 0 8px rgba(255,77,109,0); }
+    }
+
+    .voice-hint { font-size: .8rem; color: var(--muted); flex: 1; }
+    .voice-status { font-size: .78rem; font-weight: 600; color: var(--accent2); }
+
+    /* No-voice banner */
+    .no-voice-banner {
+      background: rgba(108,99,255,.08); border: 1px solid rgba(108,99,255,.2);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: .82rem; color: var(--muted); margin-bottom: 12px; display: none;
+    }
+
+    .speak-btn {
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); font-size: .78rem; padding: 4px 10px;
+      cursor: pointer; transition: all .2s; margin-bottom: 12px;
+    }
+    .speak-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .timer { font-size: 1rem; font-weight: 700; color: var(--accent2); min-width: 50px; text-align: right; }
+    #endBtn { display: none; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">Initium.AI</div>
+  <div class="nav-user">
+    <span id="jobRoleLabel" class="badge badge-purple"></span>
+    <span id="timer" class="timer">00:00</span>
+    <button class="btn btn-danger" onclick="confirmEnd()" style="padding:6px 14px;font-size:.85rem;">End Interview</button>
+  </div>
+</nav>
+
+<div id="loader">⏳</div>
+
+<div class="container" style="max-width:720px; padding-top:36px;">
+  <!-- Progress -->
+  <div class="flex items-center justify-between mb-4">
+    <span id="progressLabel" class="text-muted" style="font-size:.85rem;"></span>
+  </div>
+  <div class="progress-wrap"><div id="progressBar" class="progress-bar" style="width:0%"></div></div>
+
+  <div class="card fade-in">
+    <!-- Question -->
+    <div class="q-counter" id="qCounter">Question 1 of 5</div>
+    <div class="question-box" id="questionBox">Loading question...</div>
+
+    <!-- Speak question button (TTS) -->
+    <button class="speak-btn" id="speakBtn" onclick="speakQuestion()" title="Read question aloud">🔊 Read question aloud</button>
+
+    <!-- Feedback panel (per-question) -->
+    <div class="feedback-box" id="feedbackBox">
+      <div class="flex items-center justify-between mb-4">
+        <h3>Answer Feedback</h3>
+        <span id="fbScore" class="badge badge-purple" style="font-size:1rem;"></span>
+      </div>
+      <div class="feedback-section strength">
+        <h4>✅ Strengths</h4>
+        <ul id="fbStrengths"></ul>
+      </div>
+      <div class="feedback-section improve">
+        <h4>⚠️ Areas to Improve</h4>
+        <ul id="fbImprovements"></ul>
+      </div>
+      <div class="feedback-section">
+        <h4>📝 Summary</h4>
+        <p id="fbSummary" style="color:var(--text);font-size:.9rem;"></p>
+      </div>
+    </div>
+
+    <!-- Answer input -->
+    <div id="answerSection">
+      <!-- Voice controls (shown when speech API is supported) -->
+      <div class="no-voice-banner" id="noVoiceBanner">
+        🎙️ Voice input not supported in this browser — please type your answer below.
+      </div>
+      <div class="voice-bar" id="voiceBar" style="display:none;">
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Hold to speak">🎙️</button>
+        <div class="flex-col" style="flex:1; gap:2px;">
+          <span class="voice-hint" id="voiceHint">Click mic to speak, or type below</span>
+          <span class="voice-status" id="voiceStatus"></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Your Answer <span class="text-muted" id="inputMode">(type or speak)</span></label>
+        <textarea id="answerInput" placeholder="Your answer will appear here as you speak, or type directly..." rows="5"></textarea>
+      </div>
+
+      <div class="flex" style="gap:12px;">
+        <button id="submitAnswerBtn" class="btn btn-primary" style="flex:1" onclick="submitAnswer()">
+          Submit Answer →
+        </button>
+        <button id="endBtn" class="btn btn-success" style="flex:1" onclick="finishInterview()">
+          🏁 Get Final Results
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/interview.js"></script>
+</body>
+</html>

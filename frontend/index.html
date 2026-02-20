@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Initium.AI — AI-Powered Interviews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div class="center-page">
+  <div class="card card-sm fade-in">
+    <div class="text-center">
+      <div class="brand">Initium.AI</div>
+      <p class="brand-sub">AI-Powered First-Round Interviews</p>
+    </div>
+
+    <div id="alert" class="alert alert-error"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input id="email" type="email" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" required/>
+      </div>
+
+      <!-- Role toggle -->
+      <div class="form-group">
+        <label>Login as</label>
+        <div class="flex gap-2">
+          <button type="button" id="roleCand" class="btn btn-primary" style="flex:1" onclick="setRole('candidate')">🎯 Candidate</button>
+          <button type="button" id="roleAdmin" class="btn btn-ghost"   style="flex:1" onclick="setRole('admin')">🛡️ Admin</button>
+        </div>
+      </div>
+
+      <button id="submitBtn" type="submit" class="btn btn-primary btn-block mt-4">
+        Sign In
+      </button>
+    </form>
+
+    <p class="text-center text-muted mt-4">
+      No account? <a href="#" id="registerLink">Register here</a>
+    </p>
+  </div>
+
+  <!-- Register panel (toggle) -->
+  <div class="card card-sm fade-in" id="registerPanel" style="display:none; margin-top:16px;">
+    <h3 style="margin-bottom:20px;">Create Candidate Account</h3>
+    <div id="alertReg" class="alert alert-error"></div>
+    <form id="registerForm">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input id="regName" type="text" placeholder="Jane Smith" required/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input id="regEmail" type="email" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input id="regPassword" type="password" placeholder="Min. 6 characters" required/>
+      </div>
+      <button type="submit" class="btn btn-success btn-block">Create Account</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>

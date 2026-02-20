@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Results — Initium.AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .eval-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+    .eval-box  { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
+    .eval-box h4 { font-size:.82rem; color:var(--muted); margin-bottom:10px; }
+    .eval-box ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
+    .eval-box li  { font-size:.88rem; padding-left:16px; position:relative; }
+    .eval-box li::before { content:'•'; position:absolute; left:0; }
+    .strength-box li::before  { color:var(--accent2); }
+    .improve-box  li::before  { color:var(--danger); }
+    .q-result { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+    .q-result-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; }
+    .q-text { font-size:.9rem; font-weight:600; }
+    .a-text { font-size:.85rem; color:var(--muted); margin-bottom:6px; }
+    @media(max-width:600px){ .eval-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">Initium.AI</div>
+  <div class="nav-user">
+    <a href="profile.html" class="btn btn-ghost" style="padding:6px 14px;font-size:.85rem;">↩ Try Again</a>
+    <button class="btn btn-ghost" onclick="api.logout()" style="padding:6px 14px;font-size:.85rem;">Logout</button>
+  </div>
+</nav>
+
+<div class="container" style="max-width:760px; padding-top:36px;">
+
+  <!-- Hero score -->
+  <div class="card fade-in text-center" style="margin-bottom:20px;">
+    <p class="text-muted" style="margin-bottom:16px;">Interview Complete 🎉</p>
+    <div class="score-ring">
+      <span class="score-num" id="overallScore">—</span>
+      <span class="score-label">/ 100</span>
+    </div>
+    <span id="recommendation" class="badge" style="font-size:.9rem; padding:6px 18px;"></span>
+    <p id="evalSummary" style="margin-top:18px; color:var(--text); font-size:.93rem; max-width:560px; margin-inline:auto;"></p>
+    <p class="text-muted mt-4" style="font-size:.8rem;" id="metaLine"></p>
+  </div>
+
+  <!-- Strengths / Improvements -->
+  <div class="eval-grid fade-in">
+    <div class="eval-box strength-box">
+      <h4>✅ Top Strengths</h4>
+      <ul id="strengthsList"></ul>
+    </div>
+    <div class="eval-box improve-box">
+      <h4>⚠️ Areas to Improve</h4>
+      <ul id="improveList"></ul>
+    </div>
+  </div>
+
+  <!-- Per-question breakdown -->
+  <h3 style="margin-bottom:16px;">Question-by-Question Breakdown</h3>
+  <div id="questionBreakdown" class="fade-in"></div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/summary.js"></script>
+</body>
+</html>

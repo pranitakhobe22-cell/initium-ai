@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — Initium.AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .detail-panel {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:24px;
+      display:none; margin-top:20px; animation:fadeIn .3s;
+    }
+    .detail-panel.show { display:block; }
+    .q-block { border-left:3px solid var(--border); padding:10px 16px; margin-bottom:12px; }
+    .q-block:hover { border-color:var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">Initium.AI</div>
+  <div class="nav-user">
+    <span class="badge badge-purple">Admin</span>
+    <button class="btn btn-ghost" onclick="api.logout()" style="padding:6px 14px;font-size:.85rem;">Logout</button>
+  </div>
+</nav>
+
+<div class="container" style="padding-top:32px;">
+
+  <h2 style="margin-bottom:6px;">HR Dashboard</h2>
+  <p style="margin-bottom:28px;">Review all interview sessions and candidate evaluations.</p>
+
+  <!-- Stats row -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="stat-num" id="sTotalCand">—</div><div class="stat-lbl">Total Candidates</div></div>
+    <div class="stat-card"><div class="stat-num" id="sTotalInt">—</div><div class="stat-lbl">Total Interviews</div></div>
+    <div class="stat-card"><div class="stat-num" id="sCompleted">—</div><div class="stat-lbl">Completed</div></div>
+    <div class="stat-card"><div class="stat-num" id="sAvgScore">—</div><div class="stat-lbl">Avg Score</div></div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="flex items-center" style="gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+    <input id="searchInput" type="text" placeholder="Search by name or role..." style="max-width:280px;" oninput="filterTable()"/>
+    <select id="filterStatus" onchange="filterTable()" style="max-width:180px;">
+      <option value="">All Status</option>
+      <option value="completed">Completed</option>
+      <option value="in_progress">In Progress</option>
+    </select>
+    <button class="btn btn-ghost" onclick="loadData()" style="margin-left:auto;">↻ Refresh</button>
+  </div>
+
+  <!-- Table -->
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table id="interviewTable">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Score</th>
+          <th>Recommendation</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="7" style="text-align:center; padding:40px; color:var(--muted);">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="flex items-center justify-between mb-4">
+      <h3 id="detailTitle">Interview Detail</h3>
+      <button class="btn btn-ghost" onclick="closeDetail()" style="padding:5px 14px;">✕ Close</button>
+    </div>
+    <div id="detailContent"></div>
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
