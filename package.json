@@ -1,0 +1,14 @@
+{
+  "name": "initium-ai-orchestration",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend-react && npm run dev",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "setup": "powershell -ExecutionPolicy Bypass -File setup-initium.ps1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

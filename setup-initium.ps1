@@ -19,22 +19,29 @@ if ($mongoProcess) {
 }
 else {
     Write-Host "⚠️ MongoDB is NOT running locally." -ForegroundColor Yellow
-    Write-Host "💡 Please start MongoDB or provide an Atlas URI in backend/.env" -ForegroundColor Gray
+    Write-Host "💡 Note: You can also use MongoDB Atlas by updating backend/.env" -ForegroundColor Gray
 }
 
-# 3. Install Backend Dependencies
+# 3. Install Root Orchestration Dependencies
+Write-Host "📦 Installing Root Dependencies..." -ForegroundColor Cyan
+npm install
+
+# 4. Install Backend Dependencies
 Write-Host "📦 Installing Backend Dependencies..." -ForegroundColor Cyan
 Set-Location backend
 npm install
 
-# 4. Install Frontend Dependencies
+# 5. Install Frontend Dependencies
 Write-Host "📦 Installing Frontend Dependencies..." -ForegroundColor Cyan
 Set-Location ../frontend-react
 npm install
 
+# Return to root
+Set-Location ..
+
 Write-Host "✨ Setup Complete!" -ForegroundColor Green
 Write-Host ""
 Write-Host "To run the platform:" -ForegroundColor Cyan
-Write-Host "  1. Backend:  cd backend; npm start"
-Write-Host "  2. Frontend: cd frontend-react; npm run dev"
+Write-Host "  Option 1: Run 'npm start' in this folder"
+Write-Host "  Option 2: Run backend and frontend in separate terminals"
 Write-Host ""
