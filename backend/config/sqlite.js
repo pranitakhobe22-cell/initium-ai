@@ -2,12 +2,18 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
-if (!fs.existsSync(DATA_DIR)) {
+// On Vercel, the filesystem is read-only except for /tmp
+// We detect Vercel environment and use /tmp for our SQLite database
+const isVercel = process.env.VERCEL === '1' || !!process.env.VERCEL;
+const DATA_DIR = isVercel ? '/tmp' : path.join(__dirname, '..', 'data');
+
+if (!fs.existsSync(DATA_DIR) && !isVercel) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-const db = new Database(path.join(DATA_DIR, 'initium.db'), { verbose: console.log });
+const dbPath = path.join(DATA_DIR, 'initium.db');
+const db = new Database(dbPath, { verbose: console.log });
+
 
 // Initialize Schema
 db.exec(`
