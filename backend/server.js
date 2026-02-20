@@ -51,8 +51,14 @@ app.use(errorHandler);
 
 // ── Start Server ──────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Initium.AI server running → http://localhost:${PORT}`);
-});
+
+// On Vercel, we export the app without calling .listen()
+// This allows local development to still work while Vercel handles the routing
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`✅ Initium.AI server running → http://localhost:${PORT}`);
+  });
+}
 
 module.exports = app;
+
