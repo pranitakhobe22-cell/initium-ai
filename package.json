@@ -5,7 +5,8 @@
   "scripts": {
     "backend": "cd backend && npm start",
     "frontend": "cd frontend-react && npm run dev",
-    "build": "cd frontend-react && npm install && npm run build",
+    "build": "cd frontend-react && npm install && npx vite build --outDir ../dist",
+
     "start": "concurrently \"npm run backend\" \"npm run frontend\"",
     "setup": "powershell -ExecutionPolicy Bypass -File setup-initium.ps1"
 
