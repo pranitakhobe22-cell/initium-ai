@@ -42,6 +42,6 @@ Set-Location ..
 Write-Host "✨ Setup Complete!" -ForegroundColor Green
 Write-Host ""
 Write-Host "To run the platform:" -ForegroundColor Cyan
-Write-Host "  Option 1: Run 'npm start' in this folder"
+Write-Host "  Option 1: Run npm start in this folder"
 Write-Host "  Option 2: Run backend and frontend in separate terminals"
 Write-Host ""
