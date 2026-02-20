@@ -142,4 +142,30 @@ Evaluate on:
 Return ONLY valid JSON (no markdown):
 {
   "score": <number 0-10>,
-  "strengths": [
+  "strengths": ["string"],
+  "improvements": ["string"],
+  "summary": "string"
+}
+`.trim();
+
+  try {
+    const result = await getModel().generateContent(prompt);
+    const parsed = parseGeminiJSON(result.response.text());
+    return {
+      score: Number(parsed.score) || 0,
+      strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
+      improvements: Array.isArray(parsed.improvements) ? parsed.improvements : [],
+      summary: parsed.summary || ''
+    };
+  } catch (err) {
+    console.error('[AI] finalEvaluation failed:', err.message);
+    return {
+      score: 5,
+      strengths: ["Interview completed"],
+      improvements: ["Technical depth could be better"],
+      summary: "Average performance across the interview."
+    };
+  }
+};
+
+module.exports = { generateQuestions, evaluateAnswer, finalEvaluation };
