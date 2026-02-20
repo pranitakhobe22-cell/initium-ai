@@ -1,6 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #4F7CAC;
+  --color-primary-dark: #3d618a;
+  --color-secondary: #A7C7E7;
+  --color-secondary-light: #d1e3f5;
+  --color-background: #F4F7FA;
+  --color-surface: #ffffff;
+  --color-text-main: #2E3A59;
+  --color-text-muted: #6b7280;
+  --color-success: #6BCB77;
+  
+  --font-sans: 'Inter', 'system-ui', 'sans-serif';
+  
+  --shadow-soft: 0 4px 12px rgba(46, 58, 89, 0.05);
+  --shadow-md: 0 8px 16px rgba(46, 58, 89, 0.08);
+}
+
 
 :root {
   background-color: #F4F7FA;

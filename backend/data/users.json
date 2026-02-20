@@ -1,0 +1,11 @@
+[
+  {
+    "_id": "8b781ee454735210f433229b",
+    "name": "pranita",
+    "email": "pranitakhobe22@gmail.com",
+    "password": "$2b$10$68sTCU5B4j2FvxbGn5ei3.mysFy2P1Q40gHRHWFk/lf3Nrzi1pvh.",
+    "role": "candidate",
+    "createdAt": "2026-02-20T20:07:54.016Z",
+    "updatedAt": "2026-02-20T20:07:54.016Z"
+  }
+]

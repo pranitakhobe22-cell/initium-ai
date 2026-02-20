@@ -1,36 +1,97 @@
-const mongoose = require('mongoose');
-const JsonModel = require('../utils/jsonStorage');
+const db = require('../config/sqlite');
+const crypto = require('crypto');
 
-const InterviewSchema = new mongoose.Schema(
-  {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    profileData: { type: Object, required: true },
-    questions: [{ questionText: String, order: Number }],
-    answers: [{ 
-      questionIndex: Number, 
-      answerText: String, 
-      score: Number,
-      strengths: [String],
-      improvements: [String],
-      summary: String
-    }],
-    score: { type: Number, default: 0 },
-    strengths: [{ type: String }],
-    improvements: [{ type: String }],
-    summary: { type: String, default: '' },
-  },
-  { timestamps: true }
-);
+class Interview {
+  static create(data) {
+    const id = crypto.randomBytes(12).toString('hex');
+    const stmt = db.prepare(`
+      INSERT INTO interviews (id, user_id, profile_data, questions, answers, score, strengths, improvements, summary)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      id,
+      data.userId,
+      JSON.stringify(data.profileData),
+      JSON.stringify(data.questions || []),
+      JSON.stringify(data.answers || []),
+      data.score || 0,
+      JSON.stringify(data.strengths || []),
+      JSON.stringify(data.improvements || []),
+      data.summary || ''
+    );
+    return { id, _id: id, ...data };
+  }
 
-const MongoInterview = mongoose.model('Interview', InterviewSchema);
-const JsonInterview = new JsonModel('Interview');
+  static findById(id) {
+    const interview = db.prepare('SELECT * FROM interviews WHERE id = ?').get(id);
+    if (interview) {
+      interview._id = interview.id;
+      interview.profileData = JSON.parse(interview.profile_data);
+      interview.questions = JSON.parse(interview.questions);
+      interview.answers = JSON.parse(interview.answers);
+      interview.strengths = JSON.parse(interview.strengths);
+      interview.improvements = JSON.parse(interview.improvements);
+    }
+    return interview;
+  }
 
-module.exports = {
-    find: (q) => mongoose.connection.readyState === 1 ? MongoInterview.find(q).populate('userId', 'name email') : JsonInterview.find(q),
-    findOne: (q) => mongoose.connection.readyState === 1 ? MongoInterview.findOne(q) : JsonInterview.findOne(q),
-    findById: (id) => mongoose.connection.readyState === 1 ? MongoInterview.findById(id) : JsonInterview.findById(id),
-    create: (obj) => mongoose.connection.readyState === 1 ? MongoInterview.create(obj) : JsonInterview.create(obj),
-    findByIdAndUpdate: (id, u, o) => mongoose.connection.readyState === 1 ? MongoInterview.findByIdAndUpdate(id, u, o) : JsonInterview.findByIdAndUpdate(id, u, o),
-    countDocuments: (q) => mongoose.connection.readyState === 1 ? MongoInterview.countDocuments(q) : JsonInterview.countDocuments(q),
-};
+  static find(query = {}) {
+    const rows = db.prepare(`
+      SELECT interviews.*, users.name as user_name, users.email as user_email 
+      FROM interviews 
+      JOIN users ON interviews.user_id = users.id 
+      ORDER BY interviews.created_at DESC
+    `).all();
+    
+    const data = rows.map(r => ({
+      ...r,
+      _id: r.id,
+      userId: { name: r.user_name, email: r.user_email }, // Mock populate
+      profileData: JSON.parse(r.profile_data),
+      questions: JSON.parse(r.questions),
+      answers: JSON.parse(r.answers),
+      strengths: JSON.parse(r.strengths),
+      improvements: JSON.parse(r.improvements)
+    }));
 
+    const chain = {
+      populate: () => chain,
+      sort: () => chain,
+      then: (cb) => Promise.resolve(data).then(cb),
+      exec: () => Promise.resolve(data)
+    };
+    return chain;
+  }
+
+
+  static findByIdAndUpdate(id, updates) {
+    const current = this.findById(id);
+    if (!current) return null;
+
+    const data = { ...current, ...updates };
+    const stmt = db.prepare(`
+      UPDATE interviews SET answers = ?, score = ?, strengths = ?, improvements = ?, summary = ?
+      WHERE id = ?
+    `);
+    stmt.run(
+      JSON.stringify(data.answers),
+      data.score,
+      JSON.stringify(data.strengths),
+      JSON.stringify(data.improvements),
+      data.summary,
+      id
+    );
+    return data;
+  }
+
+  static countDocuments() {
+    return db.prepare('SELECT COUNT(*) as count FROM interviews').get().count;
+  }
+
+  static aggregate() {
+    const row = db.prepare('SELECT AVG(score) as avgScore FROM interviews WHERE score > 0').get();
+    return [{ avgScore: row.avgScore || 0 }];
+  }
+}
+
+module.exports = Interview;
