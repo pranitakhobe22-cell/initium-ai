@@ -7,5 +7,23 @@
     "role": "candidate",
     "createdAt": "2026-02-20T20:07:54.016Z",
     "updatedAt": "2026-02-20T20:07:54.016Z"
+  },
+  {
+    "_id": "da325f643f4736828c061c08",
+    "name": "pranita ",
+    "email": "pranitakhobe22@gmail.com",
+    "password": "$2b$10$KgrJwpUa2kgikdC4s5LbOeeCSBEf0mVGampYfInTxIF98jenQ7AtS",
+    "role": "candidate",
+    "createdAt": "2026-02-20T20:28:37.574Z",
+    "updatedAt": "2026-02-20T20:28:37.574Z"
+  },
+  {
+    "_id": "d82e3c9fcec3497eff4a042c",
+    "name": "pranita ",
+    "email": "pranitakhobe22@gmail.com",
+    "password": "$2b$10$7U3kg6dthLaUNxEtBlrQpurOZuEo134rTZWLP71x2R8/3pc7ZFLFa",
+    "role": "candidate",
+    "createdAt": "2026-02-20T20:32:37.553Z",
+    "updatedAt": "2026-02-20T20:32:37.553Z"
   }
 ]

@@ -32,8 +32,10 @@ app.use('/api', apiLimiter);
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/admin', adminRoutes);
+
 
 // ── 404 Handler ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {
