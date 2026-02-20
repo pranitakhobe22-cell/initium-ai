@@ -31,10 +31,14 @@ app.use((req, _res, next) => {
 app.use('/api', apiLimiter);
 
 // ── Routes ────────────────────────────────────────────────────────────────────
+app.get("/api/profile", (req, res) => {
+  res.json({ message: "Profile API working" });
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/admin', adminRoutes);
+
 
 
 // ── 404 Handler ───────────────────────────────────────────────────────────────
