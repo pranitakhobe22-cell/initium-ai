@@ -6,7 +6,8 @@ Write-Host "🚀 Starting Initium.AI Setup..." -ForegroundColor Cyan
 # 1. Check Node.js
 if (Get-Command node -ErrorAction SilentlyContinue) {
     Write-Host "✅ Node.js is installed." -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "❌ Node.js is missing! Please install it from https://nodejs.org" -ForegroundColor Red
     exit
 }
@@ -15,19 +16,20 @@ if (Get-Command node -ErrorAction SilentlyContinue) {
 $mongoProcess = Get-Process mongod -ErrorAction SilentlyContinue
 if ($mongoProcess) {
     Write-Host "✅ MongoDB service is running." -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "⚠️ MongoDB is NOT running locally." -ForegroundColor Yellow
     Write-Host "💡 Please start MongoDB or provide an Atlas URI in backend/.env" -ForegroundColor Gray
 }
 
 # 3. Install Backend Dependencies
 Write-Host "📦 Installing Backend Dependencies..." -ForegroundColor Cyan
-cd backend
+Set-Location backend
 npm install
 
 # 4. Install Frontend Dependencies
 Write-Host "📦 Installing Frontend Dependencies..." -ForegroundColor Cyan
-cd ../frontend-react
+Set-Location ../frontend-react
 npm install
 
 Write-Host "✨ Setup Complete!" -ForegroundColor Green
