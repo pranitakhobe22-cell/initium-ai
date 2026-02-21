@@ -3,24 +3,9 @@ const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || 'Internal Server Error';
 
-  // Mongoose CastError (bad ObjectId)
-  if (err.name === 'CastError') {
-    message = `Resource not found with id: ${err.value}`;
-    statusCode = 404;
-  }
-
-  // Mongoose duplicate key error
-  if (err.code === 11000) {
-    const field = Object.keys(err.keyValue)[0];
-    message = `Duplicate value for field: ${field}. Please use a different value.`;
-    statusCode = 400;
-  }
-
-  // Mongoose validation error
-  if (err.name === 'ValidationError') {
-    message = Object.values(err.errors)
-      .map((val) => val.message)
-      .join(', ');
+  // SQLite / General duplicate key error
+  if (err.code === 'SQLITE_CONSTRAINT' || err.code === 11000) {
+    message = `Duplicate value error. Please use a different value.`;
     statusCode = 400;
   }
 

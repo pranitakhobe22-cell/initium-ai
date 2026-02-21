@@ -4,23 +4,26 @@ const crypto = require('crypto');
 class User {
   static findOne(query) {
     const user = db.prepare('SELECT * FROM users WHERE email = ?').get(query.email);
-    if (user) {
-      user._id = user.id;
-    }
+    if (user) user._id = user.id;
+
     const chain = {
       select: () => chain,
       then: (cb) => Promise.resolve(user).then(cb)
     };
-    // Make chain also behave like the user object if accessed directly (simple mock)
     Object.setPrototypeOf(chain, user || {});
     return chain;
   }
 
-
   static findById(id) {
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
     if (user) user._id = user.id;
-    return user;
+
+    const chain = {
+      select: () => chain,
+      then: (cb) => Promise.resolve(user).then(cb)
+    };
+    Object.setPrototypeOf(chain, user || {});
+    return chain;
   }
 
   static create(data) {

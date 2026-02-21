@@ -22,7 +22,7 @@ class Interview {
     return { id, _id: id, ...data };
   }
 
-  static findById(id) {
+   static findById(id) {
     const interview = db.prepare('SELECT * FROM interviews WHERE id = ?').get(id);
     if (interview) {
       interview._id = interview.id;
@@ -31,6 +31,11 @@ class Interview {
       interview.answers = JSON.parse(interview.answers);
       interview.strengths = JSON.parse(interview.strengths);
       interview.improvements = JSON.parse(interview.improvements);
+
+      // Add Mock .save() method
+      interview.save = async function() {
+        return Interview.findByIdAndUpdate(this._id, this);
+      };
     }
     return interview;
   }
@@ -70,10 +75,13 @@ class Interview {
 
     const data = { ...current, ...updates };
     const stmt = db.prepare(`
-      UPDATE interviews SET answers = ?, score = ?, strengths = ?, improvements = ?, summary = ?
+      UPDATE interviews 
+      SET profile_data = ?, questions = ?, answers = ?, score = ?, strengths = ?, improvements = ?, summary = ?
       WHERE id = ?
     `);
     stmt.run(
+      JSON.stringify(data.profileData),
+      JSON.stringify(data.questions),
       JSON.stringify(data.answers),
       data.score,
       JSON.stringify(data.strengths),
